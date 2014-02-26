@@ -1,0 +1,72 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+	<meta name="viewport" content="width=320; user-scalable=no" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	
+	<title>PhoneGap</title>
+	
+	<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+	
+	<script type="text/javascript">
+		var pictureSource; 
+		var destinationType;  
+	
+		document.addEventListener("deviceready", onDeviceReady, false);
+	
+		function onDeviceReady() {
+			pictureSource = navigator.camera.PictureSourceType;
+			destinationType = navigator.camera.DestinationType; //결과값의 포맷을 설정
+		}
+	
+		function onPhotoDataSuccess(imageData) {
+			var printImage = document.getElementById('printImage');
+	
+			printImage.style.display = 'block';
+	
+			printImage.src = "data:image/jpeg;base64," + imageData;
+		}
+	
+		function onPhotoURISuccess(imageURI) {
+			var printImage = document.getElementById('printImage');
+	
+			printImage.style.display = 'block';
+	
+			printImage.src = imageURI;
+		}
+	
+		function onFail(message) {
+			alert('error : ' + message);
+		}
+		
+		function toCamera() {
+			navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
+				quality : 50,
+				destinationType : destinationType.DATA_URL,
+				sourceType : Camera.PictureSourceType.CAMERA,
+				allowEdit : true,
+				encodingType: Camera.EncodingType.JPEG,
+				targetWidth: 100,
+				targetHeight: 100,
+				popoverOptions: CameraPopoverOptions,
+				saveToPhotoAlbum: false
+			});
+		}
+	
+		function toGallery() {
+			navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+				quality : 50,
+				destinationType : destinationType.FILE_URI,
+				sourceType : pictureSource.PHOTOLIBRARY
+			});
+		}
+	</script>
+</head>
+<body>
+	<button onclick="toCamera();">촬영하기</button>
+	<button onclick="toGallery();">갤러리</button>
+	<br>
+	
+	<img style="display: none; width: 300px; height: 300px;" id="printImage" src="" />
+</body>
+</html>
